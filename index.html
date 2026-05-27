@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또번호 추천기</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 40px 28px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 32px;
+    }
+
+    p {
+      margin-bottom: 28px;
+      color: #e6e6e6;
+      line-height: 1.6;
+    }
+
+    .numbers {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 30px 0;
+      min-height: 64px;
+    }
+
+    .ball {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #222;
+      background: #ffd54f;
+      box-shadow: inset -4px -6px 10px rgba(0, 0, 0, 0.2),
+                  inset 4px 6px 10px rgba(255, 255, 255, 0.5),
+                  0 8px 14px rgba(0, 0, 0, 0.25);
+      animation: pop 0.35s ease;
+    }
+
+    .bonus-wrap {
+      margin-top: 18px;
+      font-size: 18px;
+    }
+
+    .bonus-ball {
+      margin-left: 8px;
+      background: #ff8a65;
+      color: #fff;
+    }
+
+    button {
+      border: none;
+      background: #ffca28;
+      color: #222;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 16px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      background: #ffd95b;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .notice {
+      margin-top: 24px;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 26px;
+      }
+
+      .ball {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🍀 로또번호 추천기</h1>
+    <p>
+      버튼을 누르면 1부터 45까지의 숫자 중<br />
+      로또번호 6개와 보너스 번호 1개를 추천합니다.
+    </p>
+
+    <button onclick="generateLotto()">로또번호 추천받기</button>
+
+    <div class="numbers" id="lottoNumbers"></div>
+
+    <div class="bonus-wrap" id="bonusArea"></div>
+
+    <div class="notice">
+      ※ 본 번호는 무작위 추천이며 당첨을 보장하지 않습니다.
+    </div>
+  </div>
+
+  <script>
+    function generateLotto() {
+      const numbers = [];
+
+      // 1부터 45까지 숫자 만들기
+      for (let i = 1; i <= 45; i++) {
+        numbers.push(i);
+      }
+
+      // 숫자 섞기
+      for (let i = numbers.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[randomIndex]] = [numbers[randomIndex], numbers[i]];
+      }
+
+      // 앞에서 6개는 로또번호
+      const lottoNumbers = numbers.slice(0, 6).sort((a, b) => a - b);
+
+      // 7번째 숫자는 보너스 번호
+      const bonusNumber = numbers[6];
+
+      const lottoArea = document.getElementById("lottoNumbers");
+      const bonusArea = document.getElementById("bonusArea");
+
+      lottoArea.innerHTML = "";
+      bonusArea.innerHTML = "";
+
+      lottoNumbers.forEach((num) => {
+        const ball = document.createElement("div");
+        ball.className = "ball";
+        ball.textContent = num;
+        ball.style.background = getBallColor(num);
+        lottoArea.appendChild(ball);
+      });
+
+      bonusArea.innerHTML = `
+        보너스 번호
+        <span class="ball bonus-ball">${bonusNumber}</span>
+      `;
+    }
+
+    function getBallColor(num) {
+      if (num <= 10) return "#fbc02d";
+      if (num <= 20) return "#42a5f5";
+      if (num <= 30) return "#ef5350";
+      if (num <= 40) return "#66bb6a";
+      return "#ab47bc";
+    }
+  </script>
+</body>
+</html>
