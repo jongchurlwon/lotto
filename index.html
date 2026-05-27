@@ -7,6 +7,7 @@
 
   <style>
     :root {
+      color-scheme: dark;
       --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
       --container-bg: rgba(255, 255, 255, 0.15);
       --text-color: #ffffff;
@@ -16,6 +17,7 @@
     }
 
     [data-theme="light"] {
+      color-scheme: light;
       --bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
       --container-bg: rgba(255, 255, 255, 0.8);
       --text-color: #222222;
@@ -178,7 +180,9 @@
 
 <body>
   <div class="container">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ 라이트 모드</button>
+    <button class="theme-toggle" type="button" onclick="toggleTheme()" id="themeBtn" aria-label="테마를 라이트 모드로 변경">
+      ☀️ 라이트 모드
+    </button>
     <h1>🍀 로또번호 추천기</h1>
     <p>
       버튼을 누르면 1부터 45까지의 숫자 중<br />
@@ -197,19 +201,28 @@
   </div>
 
   <script>
-    function toggleTheme() {
+    const THEME_STORAGE_KEY = "lotto-theme";
+
+    function applyTheme(theme) {
       const body = document.body;
-      const themeBtn = document.getElementById('themeBtn');
-      const currentTheme = body.getAttribute('data-theme');
-      
-      if (currentTheme === 'light') {
-        body.removeAttribute('data-theme');
-        themeBtn.textContent = '☀️ 라이트 모드';
-      } else {
-        body.setAttribute('data-theme', 'light');
-        themeBtn.textContent = '🌙 다크 모드';
-      }
+      const themeBtn = document.getElementById("themeBtn");
+      const isLight = theme === "light";
+
+      body.toggleAttribute("data-theme", isLight);
+      themeBtn.textContent = isLight ? "🌙 다크 모드" : "☀️ 라이트 모드";
+      themeBtn.setAttribute(
+        "aria-label",
+        isLight ? "테마를 다크 모드로 변경" : "테마를 라이트 모드로 변경"
+      );
     }
+
+    function toggleTheme() {
+      const nextTheme = document.body.hasAttribute("data-theme") ? "dark" : "light";
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
+    }
+
+    applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "dark");
 
     function generateLotto() {
       const numbers = [];
