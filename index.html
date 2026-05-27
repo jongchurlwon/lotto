@@ -6,6 +6,24 @@
   <title>로또번호 추천기</title>
 
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
+      --container-bg: rgba(255, 255, 255, 0.15);
+      --text-color: #ffffff;
+      --sub-text-color: #e6e6e6;
+      --notice-color: #ddd;
+      --ball-shadow: rgba(0, 0, 0, 0.25);
+    }
+
+    [data-theme="light"] {
+      --bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      --container-bg: rgba(255, 255, 255, 0.8);
+      --text-color: #222222;
+      --sub-text-color: #444444;
+      --notice-color: #666;
+      --ball-shadow: rgba(0, 0, 0, 0.15);
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -13,23 +31,44 @@
     body {
       margin: 0;
       font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      background: var(--bg-gradient);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
       width: 90%;
       max-width: 520px;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--container-bg);
       backdrop-filter: blur(12px);
       border-radius: 24px;
       padding: 40px 28px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 1px solid var(--text-color);
+      color: var(--text-color);
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: none;
+    }
+    
+    .theme-toggle:hover {
+      transform: none;
+      background: rgba(128, 128, 128, 0.1);
     }
 
     h1 {
@@ -39,7 +78,7 @@
 
     p {
       margin-bottom: 28px;
-      color: #e6e6e6;
+      color: var(--sub-text-color);
       line-height: 1.6;
     }
 
@@ -65,7 +104,7 @@
       background: #ffd54f;
       box-shadow: inset -4px -6px 10px rgba(0, 0, 0, 0.2),
                   inset 4px 6px 10px rgba(255, 255, 255, 0.5),
-                  0 8px 14px rgba(0, 0, 0, 0.25);
+                  0 8px 14px var(--ball-shadow);
       animation: pop 0.35s ease;
     }
 
@@ -80,7 +119,7 @@
       color: #fff;
     }
 
-    button {
+    .generate-btn {
       border: none;
       background: #ffca28;
       color: #222;
@@ -93,19 +132,19 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
     }
 
-    button:hover {
+    .generate-btn:hover {
       transform: translateY(-3px);
       background: #ffd95b;
     }
 
-    button:active {
+    .generate-btn:active {
       transform: scale(0.97);
     }
 
     .notice {
       margin-top: 24px;
       font-size: 13px;
-      color: #ddd;
+      color: var(--notice-color);
     }
 
     @keyframes pop {
@@ -130,7 +169,7 @@
         font-size: 20px;
       }
 
-      button {
+      .generate-btn {
         width: 100%;
       }
     }
@@ -139,13 +178,14 @@
 
 <body>
   <div class="container">
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️ 라이트 모드</button>
     <h1>🍀 로또번호 추천기</h1>
     <p>
       버튼을 누르면 1부터 45까지의 숫자 중<br />
       로또번호 6개와 보너스 번호 1개를 추천합니다.
     </p>
 
-    <button onclick="generateLotto()">로또번호 추천받기</button>
+    <button class="generate-btn" onclick="generateLotto()">로또번호 추천받기</button>
 
     <div class="numbers" id="lottoNumbers"></div>
 
@@ -157,6 +197,20 @@
   </div>
 
   <script>
+    function toggleTheme() {
+      const body = document.body;
+      const themeBtn = document.getElementById('themeBtn');
+      const currentTheme = body.getAttribute('data-theme');
+      
+      if (currentTheme === 'light') {
+        body.removeAttribute('data-theme');
+        themeBtn.textContent = '☀️ 라이트 모드';
+      } else {
+        body.setAttribute('data-theme', 'light');
+        themeBtn.textContent = '🌙 다크 모드';
+      }
+    }
+
     function generateLotto() {
       const numbers = [];
 
